@@ -93,7 +93,6 @@ def get_student_info():
 
     try:
         cur = mysql.connection.cursor()
-        # 查询所有重要的学生信息，不包括密码相关字段
         sql = "SELECT STUDENT_ID, STUDENT_NAME, GENDER, SCHOOL, MAJOR, ROOM_ID, STUDENT_PHONE_NUM, STUDENT_EMAIL_ADDRESS FROM student WHERE STUDENT_ID = %s"
         cur.execute(sql, (student_id,))
         info = cur.fetchone()
@@ -138,7 +137,6 @@ def update_student_phone():
             app.logger.info(f"Student {student_id} phone number updated successfully.")
             return jsonify({'success': True, 'message': 'Phone number updated successfully!'}), 200
         else:
-            # 即使 ID 存在但 phone 没变，rowcount 也可能为 0，但更可能是 ID 不存在
             return jsonify({'success': False, 'message': 'Phone number unchanged.'}), 404
 
     except Exception as e:
@@ -206,7 +204,6 @@ def update_tutor_phone():
             app.logger.info(f"Tutor {tutor_id} phone number updated successfully.")
             return jsonify({'success': True, 'message': 'Phone number updated successfully!'}), 200
         else:
-            # 即使 ID 存在但 phone 没变，rowcount 也可能为 0，但更可能是 ID 不存在
             return jsonify({'success': False, 'message': 'Phone number unchanged.'}), 404
 
     except Exception as e:
@@ -231,7 +228,6 @@ def get_warden_info():
 
     try:
         cur = mysql.connection.cursor()
-        # 查询所有重要的学生信息，不包括密码相关字段
         sql = "SELECT WARDEN_ID, WARDEN_NAME, WARDEN_GENDER, WARDEN_EMAIL_ADDRESS, WARDEN_PHONE_NUM FROM warden WHERE WARDEN_ID = %s"
         cur.execute(sql, (warden_id,))
         info = cur.fetchone()
@@ -276,7 +272,6 @@ def update_warden_phone():
             app.logger.info(f"Warden {warden_id} phone number updated successfully.")
             return jsonify({'success': True, 'message': 'Phone number updated successfully!'}), 200
         else:
-            # 即使 ID 存在但 phone 没变，rowcount 也可能为 0，但更可能是 ID 不存在
             return jsonify({'success': False, 'message': 'Phone number unchanged.'}), 404
 
     except Exception as e:
@@ -679,11 +674,10 @@ def get_tutor_pending_requests():
 
         select_sql2 = """SELECT rr.REQUEST_ID, S.STUDENT_ID, S.STUDENT_NAME, S.ROOM_ID, rr.REPAIR_TYPE
                  FROM repair_request rr
-                 JOIN student S ON rr.STUDENT_ID = S.STUDENT_ID
                  JOIN room R ON S.ROOM_ID = R.ROOM_ID
                  JOIN floor F ON R.FLOOR_ID = F.FLOOR_ID
                  WHERE F.TUTOR_ID = %s
-                 ORDER BY R.ROOM_ID, S.STUDENT_ID"""
+                 ORDER BY rr.REQUEST_ID"""
         cur.execute(select_sql2, (tutor_id,))
         students = cur.fetchall()
         return jsonify({'success': True, 'requests': requests_num, 'students': students})

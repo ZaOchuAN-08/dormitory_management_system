@@ -20,9 +20,7 @@ db.add_column('tutor', 'TUTOR_PASSWORD_HASHED', 'VARCHAR(225)')
 db.add_column('warden', 'WARDEN_PASSWORD_HASHED', 'VARCHAR(225)')
 
 def process_users(table_name, id_col, password_col, hash_col):
-    """
-    从表中读取所有用户ID和旧密码生成哈希并更新到哈希列。
-    """
+    """从表中读取所有用户ID和旧密码生成哈希并更新到哈希列。"""
     # 查询用户 ID 和旧密码
     users = db.select_data(table_name, f'{id_col}, {password_col}')
     if not users:

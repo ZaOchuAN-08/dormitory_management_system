@@ -1,4 +1,5 @@
 from mysql_class import MySQLdb
+import os
 import pandas
 
 if __name__ == '__main__':
@@ -86,9 +87,16 @@ if __name__ == '__main__':
     
     ## 插入基础数据
 
-    dorm_data = pandas.read_excel('dormitory_information.xlsx')
-    room_data = pandas.read_excel('room_basic_information.xlsx')
-    student_data = pandas.read_excel('student_information.xlsx')
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(BASE_DIR, '..', 'data')
+
+    dorm_path = os.path.join(data_dir, 'dormitory_information.xlsx')
+    room_path = os.path.join(data_dir, 'room_basic_information.xlsx')
+    student_path = os.path.join(data_dir, 'student_info_2000.xlsx')
+
+    dorm_data = pandas.read_excel(dorm_path)
+    room_data = pandas.read_excel(room_path)
+    student_data = pandas.read_excel(student_path)
     # student_data = pandas.read_excel('new_students.xlsx')
 
     db.insert_into_table(dorm_data, [2, 3, 4, 5, 6, 7, 16, 17], 'warden', warden_cols)    # 可变

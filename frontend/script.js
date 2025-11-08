@@ -62,7 +62,6 @@ function showDashboard(role, userInfo) {
     if (dashboard) {
         dashboard.classList.remove('hidden');
 
-        // 设置欢迎语和用户名
         let nameElement, name;
         
         if (role === 'student') {
@@ -95,7 +94,7 @@ function showDashboard(role, userInfo) {
     }
 }
 
-// 替换原来的 setupDashboardNavigation 函数
+// 辅助函数
 function setupDashboardNavigation(dashboard, defaultTabId) {
     const navButtons = dashboard.querySelectorAll('.nav-btn');
     const tabContents = dashboard.querySelectorAll('.tab-content');
@@ -155,7 +154,7 @@ function setupDashboardNavigation(dashboard, defaultTabId) {
     });
 }
 
-// --- 核心：处理登录表单提交 ---
+// 处理登录表单提交
 async function handleLogin(event) {
     event.preventDefault(); 
 
@@ -225,7 +224,7 @@ async function loadStudentInfo(studentId) {
         const response = await fetch(`${API_URL}/student/info?id=${studentId}`);
         const data = await response.json();
 
-        // **调试：在控制台打印后端返回的原始数据**
+        // 在控制台打印后端返回的原始数据
         console.log('--- 后端 /student/info 原始返回数据 ---');
         console.log(data);
         
@@ -236,7 +235,7 @@ async function loadStudentInfo(studentId) {
             console.log('--- 提取的 info 对象 ---');
             console.log(info);
 
-            // 填充信息到 HTML 元素中 (使用数据库实际列名)
+            // 填充信息到 HTML 元素中
             document.getElementById('info-id').textContent = info.STUDENT_ID || 'N/A';
             document.getElementById('info-name').textContent = info.STUDENT_NAME || 'N/A';
             document.getElementById('info-gender').textContent = info.GENDER || 'N/A';
@@ -350,7 +349,7 @@ async function handleRecharge(event) {
                 await loadStudentDormInfo(userId);
             }
 
-            rechargeMsg.textContent = data.message || `Recharge successful：${amount.toFixed(2)} Yuan.`;
+            rechargeMsg.textContent = data.message || `Recharge successful: ${amount.toFixed(2)} yuan.`;
             rechargeMsg.style.color = 'green';
             amountInput.value = ''; // 清空输入框
         } else {
@@ -503,7 +502,7 @@ async function loadTutorInfo(tutorId) {
         const response = await fetch(`${API_URL}/tutor/info?id=${tutorId}`);
         const data = await response.json();
 
-        // **调试：在控制台打印后端返回的原始数据**
+        // 在控制台打印后端返回的原始数据
         console.log('--- 后端 /tutor/info 原始返回数据 ---');
         console.log(data);
         
@@ -514,7 +513,7 @@ async function loadTutorInfo(tutorId) {
             console.log('--- 提取的 info 对象 ---');
             console.log(info);
 
-            // 填充信息到 HTML 元素中 (使用数据库实际列名)
+            // 填充信息到 HTML 元素中
             document.getElementById('info-tutor-id').textContent = info.TUTOR_ID || 'N/A';
             document.getElementById('info-tutor-name').textContent = info.TUTOR_NAME || 'N/A';
             document.getElementById('info-tutor-gender').textContent = info.TUTOR_GENDER || 'N/A';  
@@ -534,7 +533,6 @@ async function loadTutorInfo(tutorId) {
 }
 
 async function loadTutorStudentInfo(tutorId) {
-    // 确保我们当前在个人信息 Tab 
     if (!document.getElementById('tutor-student-tab').classList.contains('current-tab')) {
         return; // 如果不在当前 Tab，则不加载，避免不必要的请求
     }
@@ -548,7 +546,7 @@ async function loadTutorStudentInfo(tutorId) {
         const response = await fetch(`${API_URL}/tutor/students?id=${tutorId}`);
         const data = await response.json();
 
-        // **调试：在控制台打印后端返回的原始数据**
+        // 在控制台打印后端返回的原始数据
         console.log('--- 后端 /tutor/students 原始返回数据 ---');
         console.log(data);
         
@@ -597,8 +595,8 @@ async function loadTutorRepairRequests(tutorId) {
         const res = await fetch(`${API_URL}/tutor/pending_requests?id=${tutorId}`);
         const data = await res.json();
         const info = data.requests || {};
-        reqHBProcessed.textContent = info.TUTOR_HBPROCESSED_REQ_NUM ?? '--';
-        reqTBProcessed.textContent = info.TUTOR_TBPROCESSED_REQ_NUM ?? '--';
+        reqHBProcessed.textContent = info.TUTOR_HBPROCESSED_REQ_NUM ?? '0';
+        reqTBProcessed.textContent = info.TUTOR_TBPROCESSED_REQ_NUM ?? '0';
         
         if (res.ok && data.success && data.students.length > 0) {
             tbody.innerHTML = '';
@@ -678,7 +676,7 @@ async function loadWardenInfo(wardenId) {
         const response = await fetch(`${API_URL}/warden/info?id=${wardenId}`);
         const data = await response.json();
 
-        // **调试：在控制台打印后端返回的原始数据**
+        // 在控制台打印后端返回的原始数据
         console.log('--- 后端 /warden/info 原始返回数据 ---');
         console.log(data);
         
@@ -689,7 +687,7 @@ async function loadWardenInfo(wardenId) {
             console.log('--- 提取的 info 对象 ---');
             console.log(info);
 
-            // 填充信息到 HTML 元素中 (使用数据库实际列名)
+            // 填充信息到 HTML 元素中
             document.getElementById('info-warden-id').textContent = info.WARDEN_ID || 'N/A';
             document.getElementById('info-warden-name').textContent = info.WARDEN_NAME || 'N/A';
             document.getElementById('info-warden-gender').textContent = info.WARDEN_GENDER || 'N/A';  
@@ -709,7 +707,6 @@ async function loadWardenInfo(wardenId) {
 }
 
 async function loadWardenTutorInfo(wardenId) {
-    // 确保我们当前在个人信息 Tab 
     if (!document.getElementById('warden-tutor-tab').classList.contains('current-tab')) {
         return; // 如果不在当前 Tab，则不加载，避免不必要的请求
     }
@@ -723,7 +720,7 @@ async function loadWardenTutorInfo(wardenId) {
         const response = await fetch(`${API_URL}/warden/tutors?id=${wardenId}`);
         const data = await response.json();
 
-        // **调试：在控制台打印后端返回的原始数据**
+        // 在控制台打印后端返回的原始数据
         console.log('--- 后端 /warden/tutors 原始返回数据 ---');
         console.log(data);
         
@@ -761,7 +758,6 @@ async function loadWardenTutorInfo(wardenId) {
 }
 
 async function loadWardenStudentInfo(wardenId) {
-    // 确保我们当前在个人信息 Tab 
     if (!document.getElementById('warden-student-tab').classList.contains('current-tab')) {
         return; // 如果不在当前 Tab，则不加载，避免不必要的请求
     }
@@ -775,7 +771,7 @@ async function loadWardenStudentInfo(wardenId) {
         const response = await fetch(`${API_URL}/warden/students?id=${wardenId}`);
         const data = await response.json();
 
-        // **调试：在控制台打印后端返回的原始数据**
+        // 在控制台打印后端返回的原始数据
         console.log('--- 后端 /warden/students 原始返回数据 ---');
         console.log(data);
         
@@ -814,7 +810,6 @@ async function loadWardenStudentInfo(wardenId) {
 }
 
 async function loadWardenDormInfo(wardenId) {
-    // 确保我们当前在个人信息 Tab 
     if (!document.getElementById('warden-dorm-tab').classList.contains('current-tab')) {
         return; // 如果不在当前 Tab，则不加载，避免不必要的请求
     }
@@ -833,7 +828,7 @@ async function loadWardenDormInfo(wardenId) {
         const response = await fetch(`${API_URL}/warden/dorm_status?id=${wardenId}`);
         const data = await response.json();
 
-        // **调试：在控制台打印后端返回的原始数据**
+        // 调试：在控制台打印后端返回的原始数据
         console.log('--- 后端 /warden/dorm_status 原始返回数据 ---');
         console.log(data);
        
@@ -999,7 +994,7 @@ async function handleUpdatePhone(event) {
 
     let response = null
     const userId = localStorage.getItem('user_id');
-    const role = localStorage.getItem('role'); // 关键：获取角色信息
+    const role = localStorage.getItem('role');
     const currentPhoneInput = phoneEditElements[role].input;
     const newPhone = currentPhoneInput ? currentPhoneInput.value.trim() : '';
     
@@ -1031,11 +1026,11 @@ async function handleUpdatePhone(event) {
         if (response.ok && data.success) {
             infoMessage.textContent = data.message;
             infoMessage.style.color = 'green';
-            // 1. 更新页面显示
+            // 更新页面显示
             if (role === 'student'){document.getElementById('info-phone').textContent = newPhone;}
             else if (role === 'tutor'){document.getElementById('info-tutor-phone').textContent = newPhone;}
             else if (role === 'warden'){document.getElementById('info-warden-phone').textContent = newPhone;}
-            // 2. 隐藏表单
+            // 隐藏表单
             toggleEditPhone(false);
             
         } else {
@@ -1053,13 +1048,13 @@ async function handleUpdatePhone(event) {
     }
 }
 
-// --- 退出登录函数 (全局可用) ---
+// 退出登录函数
 function logout() {
     localStorage.clear();
     window.location.reload();
 }
 
-// --- 初始化检查和事件监听 ---
+// 初始化检查和事件监听
 document.addEventListener('DOMContentLoaded', () => {
     // 监听登录表单的提交事件
     loginForm.addEventListener('submit', handleLogin);
@@ -1069,7 +1064,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const elements = phoneEditElements[role];
         if (elements.editBtn) {
             elements.editBtn.addEventListener('click', () => {
-                // 调用 toggleEditPhone(true) 即可，函数会自己Approve localStorage 获取 role
                 toggleEditPhone(true); 
             });
         }
