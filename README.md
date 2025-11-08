@@ -131,13 +131,13 @@ This project is a **web-based Dormitory Management System** for managing student
   from werkzeug.security import check_password_hash
   import pandas, pymysql, logging, os
 
-Data Flow Example:
+**Data Flow Example:**
 - Frontend sends login info to /login (POST).
 - Backend validates credentials (hashed password check).
 - Returns JSON result with status and user data.
 - Frontend updates UI dynamically based on response.
 
-🔒 Security
+## 🔒 Security
 
 All passwords are hashed before being stored in the database.
 
@@ -146,7 +146,7 @@ The PASSWORD column remains for testing and grading only, containing plain text 
 Backend validation prevents SQL injection and handles all user input errors gracefully.
 
 
-🧰 Installation & Setup
+## 🧰 Installation & Setup
 
 **Step 1. Install Dependencies**
 
@@ -173,7 +173,7 @@ Open index.html with Live Server in VS Code.
 
 - Tip: Some HTML5 validation messages (e.g., "Please fill in this field") are displayed in the browser's language. For consistent English messages, set your browser language to English before testing.
 
-💡 Notes
+## 💡 Notes
 
 - Every dropdown menu and input validation is dynamically linked to backend data.
 - Error messages are shown inline with visual highlights.
