@@ -39,8 +39,8 @@ This project is a **web-based Dormitory Management System** for managing student
 4. **Submit Dormitory Adjustment Application**
    - Selection sequence must be **Building → Floor → Room → Bed**.  
    - Floor-gender constraints:
-     - Males can only choose floors `"2, 4, 6, 8"`.  
-     - Females can only choose floors `"3, 5, 7"`.  
+     - Males can only choose floors `2, 4, 6, 8`.  
+     - Females can only choose floors `3, 5, 7`.  
    - Rooms and beds selection:
      - Only rooms with available beds are selectable.  
      - Only beds that are empty are selectable.  
@@ -113,17 +113,6 @@ This project is a **web-based Dormitory Management System** for managing student
 
 ---
 
-## 🎨 Aesthetic Design
-
-- Background: dormitory exterior image.  
-- Main container: glass blur (“frosted glass”) style.  
-- Smooth **fade-in animation** for every page.  
-- Table rows **highlighted in gray** when selected.  
-- Tab buttons: gradient colors, glowing when selected.  
-- Buttons: hover floating and color deepening effects for interactivity.
-
----
-
 ## 🧩 System Architecture
 
 **Frontend:**  
@@ -154,25 +143,26 @@ The PASSWORD column remains for testing and grading only, containing plain text 
 Backend validation prevents SQL injection and handles all user input errors gracefully.
 
 🧰 Installation & Setup
-Step 1. Install Dependencies
+
+**Step 1. Install Dependencies**
   pip install flask flask-mysqldb flask-cors pymysql pandas werkzeug
 
-Step 2. Initialize Database
+**Step 2. Initialize Database**
 Run the following scripts in order:
 - mysql_class.py – defines helper SQL methods.
 - table_generated.py – drops existing tables and recreates new ones.
 - insert_data.py – inserts initial data.
 - secure_init_password.py – hashes all plaintext passwords.
 
-Step 3. Run Backend
+**Step 3. Run Backend**
 python app.py
 Keep this running.
 
-Step 4. Run Frontend
+**Step 4. Run Frontend**
 Open index.html with Live Server in VS Code.
-> Tip: Some HTML5 validation messages (e.g., "Please fill in this field") are displayed in the browser's language. For consistent English messages, set your browser language to English before testing.
+- Tip: Some HTML5 validation messages (e.g., "Please fill in this field") are displayed in the browser's language. For consistent English messages, set your browser language to English before testing.
 
 💡 Notes
-Every dropdown menu and input validation is dynamically linked to backend data.
-Error messages are shown inline with visual highlights.
-Each role interacts only with data within their permission scope.
+- Every dropdown menu and input validation is dynamically linked to backend data.
+- Error messages are shown inline with visual highlights.
+- Each role interacts only with data within their permission scope.
