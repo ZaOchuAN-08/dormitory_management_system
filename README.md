@@ -137,6 +137,8 @@ This project is a **web-based Dormitory Management System** for managing student
 - Returns JSON result with status and user data.
 - Frontend updates UI dynamically based on response.
 
+---
+
 ## 🔒 Security
 
 All passwords are hashed before being stored in the database.
@@ -145,6 +147,7 @@ The PASSWORD column remains for testing and grading only, containing plain text 
 
 Backend validation prevents SQL injection and handles all user input errors gracefully.
 
+---
 
 ## 🧰 Installation & Setup
 
@@ -172,6 +175,8 @@ Keep this running.
 Open index.html with Live Server in VS Code.
 
 - Tip: Some HTML5 validation messages (e.g., "Please fill in this field") are displayed in the browser's language. For consistent English messages, set your browser language to English before testing.
+
+---
 
 ## 💡 Notes
 
