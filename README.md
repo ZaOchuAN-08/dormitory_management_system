@@ -39,8 +39,8 @@ This project is a **web-based Dormitory Management System** for managing student
 4. **Submit Dormitory Adjustment Application**
    - Selection sequence must be **Building → Floor → Room → Bed**.  
    - Floor-gender constraints:
-     - Males can only choose floors 2, 4, 6, 8.  
-     - Females can only choose floors 3, 5, 7.  
+     - Males can only choose floors `"2, 4, 6, 8"`.  
+     - Females can only choose floors `"3, 5, 7"`.  
    - Rooms and beds selection:
      - Only rooms with available beds are selectable.  
      - Only beds that are empty are selectable.  
@@ -57,9 +57,8 @@ This project is a **web-based Dormitory Management System** for managing student
 ---
 
 ### 👨‍🏫 Tutor
-1. **Login and Personal Info** (Same as student). 
-   - Display name, gender, tutor ID, email, phone number.  
-   - Editable field: phone number (validated format).  
+1. **Login and Personal Info** – same validation as students.  
+   - Display name, gender, tutor ID, email, phone number. 
 2. **Edit Phone Number** – same rules as above.  
 3. **Process Maintenance Requests**
    - Options: Approve or Reject.  
@@ -77,18 +76,20 @@ This project is a **web-based Dormitory Management System** for managing student
 ### 🧍‍♂️ Warden
 
 1. **Login and Personal Info** – same validation as students.  
-2. **View Tutors**
+   - Display name, gender, warden ID, email, phone number. 
+2. **Edit Phone Number** – same rules as above.  
+3. **View Tutors**
    - Shows tutor info including pending application counts.  
    - Sorted by floor managed.  
 
-3. **View Students**
+4. **View Students**
    - Sorted by room number + bed number.  
 
-4. **Monitor Dormitory Occupancy**
+5. **Monitor Dormitory Occupancy**
    - Displays total beds, occupied beds, available beds, and electricity balance.  
    - Available beds = 0 → displayed in **red**; otherwise **green**.  
 
-5. **Process Dormitory Adjustment Requests**
+6. **Process Dormitory Adjustment Requests**
    - Approve or reject student dormitory transfer applications.  
    - Upon approval:
      - Student's dormitory info updated.  
