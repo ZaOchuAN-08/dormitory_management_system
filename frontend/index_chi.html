@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生宿舍管理系统 - 登录</title>
+    <link rel="stylesheet" href="style_chi.css">
+</head>
+<body>
+
+    <!-- 登录界面区域 -->
+    <div id="login-container" class="container">
+        <h1>学生宿舍管理系统</h1>
+        <p class="subtitle">请使用您的 ID 和密码登录</p>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="user-id">账号 ID</label>
+                <input type="text" id="user-id" required placeholder="请输入您的账号 ID">
+            </div>
+            <div class="input-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" required placeholder="请输入您的密码">
+            </div>
+            <button type="submit" class="btn login-btn">立即登录</button>
+        </form>
+        <!-- 登录反馈信息区域 -->
+        <p id="login-message" class="message"></p>
+    </div>
+
+    <!-- 学生仪表盘 -->
+    <div id="student-dashboard" class="container dashboard hidden">
+        <h2 class="role-title student-color">学生中心</h2>
+        <p class="welcome-msg">欢迎回来，<span id="student-name" class="font-bold"></span> 同学！</p>
+        <div id="student-content">
+            <p>您已成功以学生角色登录。</p>
+            <!-- 导航按钮：所有学生功能 -->
+            <div class="nav-buttons">
+                <!-- data-target 属性与下面的 tab-content ID 相匹配 -->
+                <button class="btn nav-btn" data-target="student-info-tab">个人信息</button>
+                <button class="btn nav-btn" data-target="student-dorm-tab">宿舍/电费</button>
+                <button class="btn nav-btn" data-target="student-repair-tab">维修申请</button>
+                <button class="btn nav-btn" data-target="student-adjust-tab">调宿申请</button>
+            </div>
+            
+            <!-- 个人信息卡片 -->
+            <div id="student-info-tab" class="card tab-content current-tab">
+                <h3 class="card-title">个人基本信息</h3>
+                <div class="info-grid fade-in">
+                    <div><strong>学生号:</strong> <span id="info-id"></span></div>
+                    <div><strong>姓名:</strong> <span id="info-name"></span></div>
+                    <div><strong>性别:</strong> <span id="info-gender"></span></div>
+                    <div><strong>宿舍:</strong> <span id="info-dormroom"></span></div>
+                    <div><strong>学院:</strong> <span id="info-school"></span></div>
+                    <div><strong>专业:</strong> <span id="info-major"></span></div>
+                    <div><strong>邮箱:</strong> <span id="info-email"></span></div>
+                    <div><strong>手机号:</strong> <span id="info-phone"></span>
+                    <button id="student-edit-btn" class="btn edit-btn">修改</button></div>
+                </div>
+
+                <form id="student-update-form" class="hidden">
+                    <div class="input-group">
+                        <input type="tel" id="new-phone-input" required placeholder="请输入新的手机号码">
+                    </div>
+                    <button type="submit" class="btn save-btn">保存</button>
+                    <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">取消</button>
+                </form>
+
+                <p id="info-student-message" class="message"></p>
+            </div>
+
+            <!-- 宿舍/电费功能区 -->
+            <div id="student-dorm-tab" class="card tab-content hidden">
+            <h3 class="card-title">宿舍与电费管理</h3>
+            <!-- 宿舍信息展示区 -->
+            <div id="dorm-info-display" class="fade-in">
+                <h4>我的宿舍信息</h4>
+                <div class="grid-cols-2">
+                    <p><strong>楼栋：</strong> <span id="info-building-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>楼层：</strong> <span id="info-floor-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>房间号：</strong> <span id="info-room-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>床位号：</strong> <span id="info-bed-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>待处理申请数：</strong> <span id="info-reqtbp-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>已处理申请数：</strong> <span id="info-reqhbp-id" class="font-mono text-indigo-600"></span></p>
+                </div>
+                
+                <div class="elec_balance">
+                    <p style="font-size: 1.1rem;">
+                        <strong>电费余额：</strong> 
+                        <span id="info-electricity-balance"></span>
+                        <span>度 (kWh)</span>
+                    </p>
+                </div>
+                
+                <p id="dorm-message" class="message"></p>
+            </div>
+            <!-- 电费充值表单 -->
+            <div>
+                <h4>电费充值</h4>
+                <form id="electricity-recharge-form">
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label for="recharge-amount">充值金额 (元)</label>
+                        <input type="number" id="recharge-amount" name="recharge_amount" 
+                            min="10" step="1" placeholder="最低充值10元，步长为1元" required>
+                    </div>
+                    
+                    <button type="submit" id="recharge-btn" class="btn recharge-btn">
+                        立即充值
+                    </button>
+                </form>
+                <p id="recharge-message" class="text-sm mt-3 text-center"></p>
+            </div>
+            </div>
+            
+            <!-- 维修申请功能区 (待实现) -->
+            <div id="student-repair-tab" class="card tab-content hidden">
+                <h3 class="card-title">设备报修申请</h3>
+                <!-- 学生提交维修申请 -->
+                <form id="repair-request-form" class="repair-form fade-in">
+                    <label for="repair-type">维修类型：</label>
+                    <select id="repair-type" name="repair_type" required>
+                        <option value="" disabled selected>请选择维修类型</option>
+                        <option value="电路故障">电路故障</option>
+                        <option value="门锁损坏">门锁损坏</option>
+                        <option value="家具损坏">家具损坏</option>
+                        <option value="卫生间漏水">卫生间漏水</option>
+                    </select>
+
+                    <label for="repair-room">宿舍号：</label>
+                    <select id="repair-room" name="room_id" required>
+                        <option value="" disabled selected>请选择房间号</option>
+                        <!-- JS添加唯一的宿舍号 -->
+                    </select>
+                    <button type="submit" class="btn-submit">提交申请</button>
+                </form>
+                <p id="repair-message" class="message"></p>
+            </div>
+            
+            <!-- 调宿申请功能区 (待实现) -->
+            <div id="student-adjust-tab" class="card tab-content hidden">
+                <h3 class="card-title">调宿申请</h3>
+                <form id="adjust-request-form" class="repair-form fade-in">
+                    <label for="adjust-building">楼栋：</label>
+                    <select id="adjust-building" name="building_id" required>
+                        <option value="" disabled selected>请选择楼栋</option>
+                        <!-- JS 动态加载 -->
+                    </select>
+                    <label for="adjust-floor">楼层：</label>
+                    <select id="adjust-floor" name="floor_id" required>
+                        <option value="" disabled selected>请选择楼层</option>
+                    </select>
+                    <label for="adjust-room">房间号：</label>
+                    <select id="adjust-room" name="room_id" required>
+                        <option value="" disabled selected>请选择房间号</option>
+                    </select>
+                    <label for="adjust-bed">床号：</label>
+                    <select id="adjust-bed" name="bed_num" required>
+                        <option value="" disabled selected>请选择床号</option>
+                    </select>
+                    <button type="submit" class="btn-submit">提交申请</button>
+
+                    <p id="adjust-message" class="text-center"></p>
+                </form>
+            </div>
+
+        </div>
+        <button class="btn logout-btn" onclick="logout()">退出登录</button>
+    </div>
+
+    <!-- 导师仪表盘 -->
+    <div id="tutor-dashboard" class="container dashboard hidden">
+        <h2 class="role-title tutor-color">导师中心</h2>
+        <p>欢迎回来，<span id="tutor-name" class="font-bold"></span> 老师！</p>
+        <div id="tutor-content">
+            <p>您已成功以导师角色登录。</p>
+            <!-- 导航按钮：所有导师功能 -->
+            <div class="nav-buttons">
+                <!-- data-target 属性与下面的 tab-content ID 相匹配 -->
+                <button class="btn nav-btn" data-target="tutor-info-tab">个人信息</button>
+                <button class="btn nav-btn" data-target="tutor-student-tab">学生信息</button>
+                <button class="btn nav-btn" data-target="tutor-repair-tab">维修申请</button>
+            </div>
+            
+            <!-- 个人信息卡片 -->
+            <div id="tutor-info-tab" class="card tab-content current-tab">
+                <h3 class="card-title">个人基本信息</h3>
+                <div class="info-grid fade-in">
+                    <div><strong>导师ID:</strong> <span id="info-tutor-id"></span></div>
+                    <div><strong>姓名:</strong> <span id="info-tutor-name"></span></div>
+                    <div><strong>性别:</strong> <span id="info-tutor-gender"></span></div>
+                    <div><strong>邮箱:</strong> <span id="info-tutor-email"></span></div>
+                    <div><strong>手机号:</strong> <span id="info-tutor-phone"></span>
+                    <button id="tutor-edit-btn" class="btn edit-btn">修改</button></div>
+                </div>
+
+                <form id="tutor-update-form" class="hidden">
+                    <div class="input-group">
+                        <input type="tel" id="new-tutor-phone-input" required placeholder="请输入新的手机号码">
+                    </div>
+                    <button type="submit" class="btn save-btn">保存</button>
+                    <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">取消</button>
+                </form>
+
+                <p id="info-tutor-message" class="message"></p>
+            </div>
+
+            <div id="tutor-student-tab" class="card tab-content hidden">
+                <h3 class="card-title">学生信息</h3>
+                <p id="tutor-student-message" class="text-sm-gray mb-2"></p>
+                <div class="info-grid overflow-x-auto fade-in">
+                    <table id="tutor-student-table" class="styled-table text-center">
+                        <thead>
+                            <tr>
+                                <th>学生ID</th>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>学院</th>
+                                <th>专业</th>
+                                <th>手机号</th>
+                                <th>宿舍号</th>
+                                <th>床位号</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tutor-student-table-body"></td>
+                            <tr><td colspan="8" class="no-data"></td></tr>                         
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 处理维修申请功能区 -->
+            <div id="tutor-repair-tab" class="card tab-content hidden">
+                <h3 class="card-title">处理设备报修申请</h3>
+                <form id="tutor-repair-form">
+                    <div class="summary-req-card green">
+                        <div class="summary-title">已处理申请数</div>
+                        <div id="summary-req-hbprocessed" class="summary-value"></div>
+                    </div>
+                    <div class="summary-req-card red">
+                        <div class="summary-title">待处理申请数</div>
+                        <div id="summary-req-tbprocessed" class="summary-value"></div>
+                    </div>
+                    
+                    <table class="styled-table fade-in">
+                        <thead>
+                            <tr>
+                                <th>学生ID</th>
+                                <th>姓名</th>
+                                <th>宿舍号</th>
+                                <th>维修类型</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="repair-table-body">
+                            <!-- JS 动态填充 -->
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+
+        </div>  
+        <button class="btn logout-btn" onclick="logout()">退出登录</button>
+    </div>
+
+    <!-- 舍监仪表盘 -->
+    <div id="warden-dashboard" class="container dashboard hidden">
+        <h2 class="role-title warden-color">舍监中心</h2>
+        <p>欢迎回来，<span id="warden-name" class="font-bold"></span> 管理员！</p>
+        <div id="warden-content">
+            <p>您已成功以舍监角色登录。</p>
+            <!-- 导航按钮：所有舍监功能 -->
+            <div class="nav-buttons">
+                <!-- data-target 属性与下面的 tab-content ID 相匹配 -->
+                <button class="btn nav-btn" data-target="warden-info-tab">个人信息</button>
+                <button class="btn nav-btn" data-target="warden-tutor-tab">导师信息</button>
+                <button class="btn nav-btn" data-target="warden-student-tab">学生信息</button>
+                <button class="btn nav-btn" data-target="warden-dorm-tab">宿舍状态</button>
+                <button class="btn nav-btn" data-target="warden-adjust-tab">调宿申请</button>
+            </div>
+            
+            <!-- 个人信息卡片 -->
+            <div id="warden-info-tab" class="card tab-content current-tab">
+                <h3 class="card-title">个人基本信息</h3>
+                <div class="info-grid fade-in">
+                    <div><strong>舍监ID:</strong> <span id="info-warden-id"></span></div>
+                    <div><strong>姓名:</strong> <span id="info-warden-name"></span></div>
+                    <div><strong>性别:</strong> <span id="info-warden-gender"></span></div>
+                    <div><strong>邮箱:</strong> <span id="info-warden-email"></span></div>
+                    <div><strong>手机号:</strong> <span id="info-warden-phone"></span>
+                    <button id="warden-edit-btn" class="btn edit-btn">修改</button></div>
+                </div>
+
+                <form id="warden-update-form" class="hidden">
+                    <div class="input-group">
+                        <input type="tel" id="new-warden-phone-input" required placeholder="请输入新的手机号码">
+                    </div>
+                    <button type="submit" class="btn save-btn">保存</button>
+                    <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">取消</button>
+                </form>
+
+                <p id="info-warden-message" class="message"></p>
+            </div>
+
+            <!-- 查看楼栋导师信息功能区 -->
+            <div id="warden-tutor-tab" class="card tab-content hidden">
+                <h3 class="card-title">导师信息</h3>
+                <p id="warden-tutor-message" class="text-sm-gray mb-2"></p>
+                <div class="info-grid overflow-x-auto fade-in">
+                    <table id="warden-tutor-table" class="styled-table text-center">
+                        <thead>
+                            <tr>
+                                <th>导师ID</th>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>手机号</th>
+                                <th>负责楼层</th>
+                                <th>待处理申请数</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warden-tutor-table-body"></td>
+                            <tr><td colspan="7" class="no-data"></td></tr><!-- 导师数据在此处加载 -->                         
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 查看楼学生信息功能区 (待实现) -->
+            <div id="warden-student-tab" class="card tab-content hidden">
+                <h3 class="card-title">学生信息</h3>
+                <p id="warden-student-message" class="text-sm-gray mb-2"></p>
+                <div class="info-grid overflow-x-auto fade-in">
+                    <table id="warden-student-table" class="styled-table text-center">
+                        <thead>
+                            <tr>
+                                <th>学生ID</th>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>学院</th>
+                                <th>专业</th>
+                                <th>手机号</th>
+                                <th>宿舍号</th>
+                                <th>床位号</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warden-student-table-body"></td>
+                            <tr><td colspan="8" class="no-data"></td></tr>                         
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 查看楼栋宿舍状态功能区 (待实现) -->
+            <div id="warden-dorm-tab" class="card tab-content hidden">
+                <h3 class="card-title">宿舍状态</h3>
+                <p id="warden-dorm-message"></p>                
+                <div class="info-grid overflow-x-auto fade-in">
+                    <!-- 三个统计卡片 -->
+                    <div class="summary-card blue">
+                        <div class="summary-title">总床位数</div>
+                        <div id="summary-total-beds" class="summary-value"></div>
+                    </div>
+                    <div class="summary-card yellow">
+                        <div class="summary-title">已占用床位</div>
+                        <div id="summary-occupied-beds" class="summary-value"></div>
+                    </div>
+                    <div class="summary-card green">
+                        <div class="summary-title">空闲床位</div>
+                        <div id="summary-available-beds" class="summary-value"></div>
+                    </div>
+                    <!-- 房间详情列表 -->
+                    <table id="warden-dorm-table" class="styled-table text-center">
+                        <thead>
+                            <tr>
+                                <th>楼层</th>
+                                <th>房间号</th>
+                                <th>最大容量</th>
+                                <th>已住人数</th>
+                                <th>剩余床位</th>
+                                <th>电费余额 (元)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warden-dorm-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 处理调宿申请功能区 (待实现) -->
+            <div id="warden-adjust-tab" class="card tab-content hidden">
+                <h3 class="card-title">处理调宿申请</h3>
+                <form id="warden-adjust-form">
+                    <div class="summary-req-card green">
+                        <div class="summary-title">已处理申请数</div>
+                        <div id="summary-adj-req-hbprocessed" class="summary-value"></div>
+                    </div>
+                    <div class="summary-req-card red">
+                        <div class="summary-title">待处理申请数</div>
+                        <div id="summary-adj-req-tbprocessed" class="summary-value"></div>
+                    </div>
+                </form>
+                <table class="styled-table fade-in">
+                    <thead>
+                        <tr>
+                            <th>学生ID</th>
+                            <th>姓名</th>
+                            <th>当前宿舍</th>
+                            <th>目标宿舍</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adjust-table-body"></tbody>
+                </table>
+            </div>
+
+        </div>
+        <button class="btn logout-btn" onclick="logout()">退出登录</button>
+    </div>
+
+    <!-- 引入 JavaScript 文件 -->
+    <script src="script_chi.js"></script>
+    <!-- <script src="student_info.js"></script> -->
+</body>
+</html>

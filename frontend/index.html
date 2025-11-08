@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dormitory Management System - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Login Section -->
+    <div id="login-container" class="container">
+        <h1>Student Dormitory Management System</h1>
+        <p class="subtitle">Please log in with your ID and password</p>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="user-id">User ID</label>
+                <input type="text" id="user-id" required placeholder="Enter your User ID">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter your password">
+            </div>
+            <button type="submit" class="btn login-btn">Log In</button>
+        </form>
+        <!-- Login feedback -->
+        <p id="login-message" class="message"></p>
+    </div>
+
+    <!-- Student Dashboard -->
+    <div id="student-dashboard" class="container dashboard hidden">
+        <h2 class="role-title student-color">Student Center</h2>
+        <p class="welcome-msg">Welcome back, <span id="student-name" class="font-bold"></span>!</p>
+        <div id="student-content">
+            <p>You are successfully logged in as a student.</p>
+            <!-- Navigation buttons for student -->
+            <div class="nav-buttons">
+                <button class="btn nav-btn" data-target="student-info-tab">Profile</button>
+                <button class="btn nav-btn" data-target="student-dorm-tab">Dorm / Electricity</button>
+                <button class="btn nav-btn" data-target="student-repair-tab">Repair Request</button>
+                <button class="btn nav-btn" data-target="student-adjust-tab">Room Adjustment</button>
+            </div>
+            
+            <!-- Profile card -->
+            <div id="student-info-tab" class="card tab-content current-tab">
+                <h3 class="card-title">Basic Information</h3>
+                <div class="info-grid fade-in">
+                    <div><strong>Student ID:</strong> <span id="info-id"></span></div>
+                    <div><strong>Name:</strong> <span id="info-name"></span></div>
+                    <div><strong>Gender:</strong> <span id="info-gender"></span></div>
+                    <div><strong>Dormitory:</strong> <span id="info-dormroom"></span></div>
+                    <div><strong>School:</strong> <span id="info-school"></span></div>
+                    <div><strong>Major:</strong> <span id="info-major"></span></div>
+                    <div><strong>Email:</strong> <span id="info-email"></span></div>
+                    <div><strong>Phone:</strong> <span id="info-phone"></span>
+                    <button id="student-edit-btn" class="btn edit-btn">EDIT</button></div>
+                </div>
+
+                <form id="student-update-form" class="hidden">
+                    <div class="input-group">
+                        <input type="tel" id="new-phone-input" required placeholder="Enter new phone number">
+                    </div>
+                    <button type="submit" class="btn save-btn">Save</button>
+                    <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">Cancel</button>
+                </form>
+
+                <p id="info-student-message" class="message"></p>
+            </div>
+
+            <!-- Dorm / Electricity -->
+            <div id="student-dorm-tab" class="card tab-content hidden">
+            <h3 class="card-title">Dormitory & Electricity Management</h3>
+            <!-- Dorm info display -->
+            <div id="dorm-info-display" class="fade-in">
+                <h4>My Dormitory Info</h4>
+                <div class="grid-cols-2">
+                    <p><strong>Building:</strong> <span id="info-building-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>Floor:</strong> <span id="info-floor-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>Room Number:</strong> <span id="info-room-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>Bed Number:</strong> <span id="info-bed-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>Pending Requests:</strong> <span id="info-reqtbp-id" class="font-mono text-indigo-600"></span></p>
+                    <p><strong>Processed Requests:</strong> <span id="info-reqhbp-id" class="font-mono text-indigo-600"></span></p>
+                </div>
+                <div class="elec_balance">
+                    <p style="font-size: 1.1rem;">
+                        <strong>Electricity Balance:</strong> 
+                        <span id="info-electricity-balance"></span>
+                        <span>kWh</span>
+                    </p>
+                </div>
+                
+                <p id="dorm-message" class="message"></p>
+            </div>
+            <!-- Electricity Recharge Form -->
+            <div>
+                <h4>Recharge Electricity</h4>
+                <form id="electricity-recharge-form">
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label for="recharge-amount">Amount (CNY)</label>
+                        <input type="number" id="recharge-amount" name="recharge_amount" 
+                            min="10" step="1" placeholder="Minimum 10 CNY, step 1" required>
+                    </div>
+                    <button type="submit" id="recharge-btn" class="btn recharge-btn">
+                        Recharge Now
+                    </button>
+                </form>
+                <p id="recharge-message" class="text-sm mt-3 text-center"></p>
+            </div>
+            </div>
+            
+            <!-- Repair Request -->
+            <div id="student-repair-tab" class="card tab-content hidden">
+                <h3 class="card-title">Repair Request</h3>
+                <form id="repair-request-form" class="repair-form fade-in">
+                    <label for="repair-type">Repair Type:</label>
+                    <select id="repair-type" name="repair_type" required>
+                        <option value="" disabled selected>Select repair type</option>
+                        <option value="Electrical">Electrical Issue</option>
+                        <option value="Lock">Broken Lock</option>
+                        <option value="Furniture">Furniture Damage</option>
+                        <option value="Water">Bathroom Leakage</option>
+                    </select>
+                    <label for="repair-room">Dorm Room:</label>
+                    <select id="repair-room" name="room_id" required>
+                        <option value="" disabled selected>Select Room Number</option>
+                        <!-- JS add unique room numbers -->
+                    </select>
+                    <button type="submit" class="btn-submit">Submit Request</button>
+                </form>
+                <p id="repair-message" class="message"></p>
+            </div>
+            
+            <!-- Room Adjustment -->
+            <div id="student-adjust-tab" class="card tab-content hidden">
+                <h3 class="card-title">Room Adjustment Request</h3>
+                <form id="adjust-request-form" class="repair-form fade-in">
+                    <label for="adjust-building">Building:</label>
+                    <select id="adjust-building" name="building_id" required>
+                        <option value="" disabled selected>Select Building</option>
+                    </select>
+                    <label for="adjust-floor">Floor:</label>
+                    <select id="adjust-floor" name="floor_id" required>
+                        <option value="" disabled selected>Select Floor</option>
+                    </select>
+                    <label for="adjust-room">Room Number:</label>
+                    <select id="adjust-room" name="room_id" required>
+                        <option value="" disabled selected>Select Room</option>
+                    </select>
+                    <label for="adjust-bed">Bed Number:</label>
+                    <select id="adjust-bed" name="bed_num" required>
+                        <option value="" disabled selected>Select Bed</option>
+                    </select>
+                    <button type="submit" class="btn-submit">Submit Request</button>
+                    <p id="adjust-message" class="text-center"></p>
+                </form>
+            </div>
+        </div>
+        <button class="btn logout-btn" onclick="logout()">LOG OUT</button>
+    </div>
+
+    <!-- Tutor Dashboard -->
+    <div id="tutor-dashboard" class="container dashboard hidden">
+        <h2 class="role-title tutor-color">Tutor Center</h2>
+        <p>Welcome back, <span id="tutor-name" class="font-bold"></span>!</p>
+        <div id="tutor-content">
+            <p>You are successfully logged in as a tutor.</p>
+            <!-- Tutor navigation -->
+            <div class="nav-buttons">
+                <button class="btn nav-btn" data-target="tutor-info-tab">Profile</button>
+                <button class="btn nav-btn" data-target="tutor-student-tab">Student Info</button>
+                <button class="btn nav-btn" data-target="tutor-repair-tab">Repair Requests</button>
+            </div>
+            
+            <!-- Tutor Profile -->
+            <div id="tutor-info-tab" class="card tab-content current-tab">
+                <h3 class="card-title">Basic Information</h3>
+                <div class="info-grid fade-in">
+                    <div><strong>Tutor ID:</strong> <span id="info-tutor-id"></span></div>
+                    <div><strong>Name:</strong> <span id="info-tutor-name"></span></div>
+                    <div><strong>Gender:</strong> <span id="info-tutor-gender"></span></div>
+                    <div><strong>Email:</strong> <span id="info-tutor-email"></span></div>
+                    <div><strong>Phone:</strong> <span id="info-tutor-phone"></span>
+                    <button id="tutor-edit-btn" class="btn edit-btn">EDIT</button></div>
+                </div>
+                <form id="tutor-update-form" class="hidden">
+                    <div class="input-group">
+                        <input type="tel" id="new-tutor-phone-input" required placeholder="Enter new phone number">
+                    </div>
+                    <button type="submit" class="btn save-btn">Save</button>
+                    <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">Cancel</button>
+                </form>
+                <p id="info-tutor-message" class="message"></p>
+            </div>
+
+            <div id="tutor-student-tab" class="card tab-content hidden">
+                <h3 class="card-title">Student Information</h3>
+                <p id="tutor-student-message" class="text-sm-gray mb-2"></p>
+                <div class="info-grid overflow-x-auto fade-in">
+                    <table id="tutor-student-table" class="styled-table text-center">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>School</th>
+                                <th>Major</th>
+                                <th>Phone</th>
+                                <th>Dorm Room</th>
+                                <th>Bed Number</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tutor-student-table-body"></td>
+                            <tr><td colspan="8" class="no-data"></td></tr>                         
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tutor repair requests -->
+            <div id="tutor-repair-tab" class="card tab-content hidden">
+                <h3 class="card-title">Process Repair Requests</h3>
+                <form id="tutor-repair-form">
+                    <div class="summary-req-card green">
+                        <div class="summary-title">Processed Requests</div>
+                        <div id="summary-req-hbprocessed" class="summary-value"></div>
+                    </div>
+                    <div class="summary-req-card red">
+                        <div class="summary-title">Pending Requests</div>
+                        <div id="summary-req-tbprocessed" class="summary-value"></div>
+                    </div>
+                    
+                    <table class="styled-table fade-in">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Dorm Room</th>
+                                <th>Repair Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="repair-table-body"></tbody>
+                    </table>
+                </form>
+            </div>
+
+
+        </div>  
+        <button class="btn logout-btn" onclick="logout()">LOG OUT</button>
+    </div>
+
+    <!-- Warden Dashboard -->
+    <div id="warden-dashboard" class="container dashboard hidden">
+        <h2 class="role-title warden-color">Warden Center</h2>
+        <p>Welcome back, <span id="warden-name" class="font-bold"></span>!</p>
+        <div id="warden-content">
+            <p>You are successfully logged in as a warden.</p>
+            <!-- Warden navigation -->
+            <div class="nav-buttons">
+                <button class="btn nav-btn" data-target="warden-info-tab">Profile</button>
+                <button class="btn nav-btn" data-target="warden-tutor-tab">Tutor Info</button>
+                <button class="btn nav-btn" data-target="warden-student-tab">Student Info</button>
+                <button class="btn nav-btn" data-target="warden-dorm-tab">Dorm Status</button>
+                <button class="btn nav-btn" data-target="warden-adjust-tab">Room Adjustment Requests</button>
+            </div>
+            
+            <!-- Warden Profile -->
+            <div id="warden-info-tab" class="card tab-content current-tab">
+                <h3 class="card-title">Basic Information</h3>
+                <div class="info-grid fade-in">
+                    <div><strong>Warden ID:</strong> <span id="info-warden-id"></span></div>
+                    <div><strong>Name:</strong> <span id="info-warden-name"></span></div>
+                    <div><strong>Gender:</strong> <span id="info-warden-gender"></span></div>
+                    <div><strong>Email:</strong> <span id="info-warden-email"></span></div>
+                    <div><strong>Phone:</strong> <span id="info-warden-phone"></span>
+                    <button id="warden-edit-btn" class="btn edit-btn">EDIT</button></div>
+                </div>
+
+                <form id="warden-update-form" class="hidden">
+                    <div class="input-group">
+                        <input type="tel" id="new-warden-phone-input" required placeholder="Enter new phone number">
+                    </div>
+                    <button type="submit" class="btn save-btn">Save</button>
+                    <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">Cancel</button>
+                </form>
+
+                <p id="info-warden-message" class="message"></p>
+            </div>
+
+            <!-- Tutor Info -->
+            <div id="warden-tutor-tab" class="card tab-content hidden">
+                <h3 class="card-title">Tutor Information</h3>
+                <p id="warden-tutor-message" class="text-sm-gray mb-2"></p>
+                <div class="info-grid overflow-x-auto fade-in">
+                    <table id="warden-tutor-table" class="styled-table text-center">
+                        <thead>
+                            <tr>
+                                <th>Tutor ID</th>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Phone</th>
+                                <th>Assigned Floors</th>
+                                <th>Pending Requests</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warden-tutor-table-body"></td>
+                            <tr><td colspan="7" class="no-data"></td></tr>                         
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Student Info -->
+            <div id="warden-student-tab" class="card tab-content hidden">
+                <h3 class="card-title">Student Information</h3>
+                <p id="warden-student-message" class="text-sm-gray mb-2"></p>
+                <div class="info-grid overflow-x-auto fade-in">
+                    <table id="warden-student-table" class="styled-table text-center">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>School</th>
+                                <th>Major</th>
+                                <th>Phone</th>
+                                <th>Dorm Room</th>
+                                <th>Bed Number</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warden-student-table-body"></td>
+                            <tr><td colspan="8" class="no-data"></td></tr>                         
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Dorm Status -->
+            <div id="warden-dorm-tab" class="card tab-content hidden">
+                <h3 class="card-title">Dormitory Status</h3>
+                <p id="warden-dorm-message"></p>                
+                <div class="info-grid overflow-x-auto fade-in">
+                    <div class="summary-card blue">
+                        <div class="summary-title">Total Beds</div>
+                        <div id="summary-total-beds" class="summary-value"></div>
+                    </div>
+                    <div class="summary-card yellow">
+                        <div class="summary-title">Occupied Beds</div>
+                        <div id="summary-occupied-beds" class="summary-value"></div>
+                    </div>
+                    <div class="summary-card green">
+                        <div class="summary-title">Available Beds</div>
+                        <div id="summary-available-beds" class="summary-value"></div>
+                    </div>
+                    
+                    <table id="warden-dorm-table" class="styled-table text-center">
+                        <thead>
+                            <tr>
+                                <th>Floor</th>
+                                <th>Room Number</th>
+                                <th>Max Capacity</th>
+                                <th>Current Occupancy</th>
+                                <th>Remain Beds</th>
+                                <th>Electricity Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warden-dorm-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Room Adjustment -->
+            <div id="warden-adjust-tab" class="card tab-content hidden">
+                <h3 class="card-title">Room Adjustment Requests</h3>
+                <form id="warden-adjust-form">
+                    <div class="summary-req-card green">
+                        <div class="summary-title">Processed Requests</div>
+                        <div id="summary-adj-req-hbprocessed" class="summary-value"></div>
+                    </div>
+                    <div class="summary-req-card red">
+                        <div class="summary-title">Pending Requests</div>
+                        <div id="summary-adj-req-tbprocessed" class="summary-value"></div>
+                    </div>
+                </form>
+                <table class="styled-table fade-in">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Original Room</th> 
+                            <th>Requested Room</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adjust-table-body"></tbody>
+                </table>
+            </div>
+
+        </div>
+        <button class="btn logout-btn" onclick="logout()">LOG OUT</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
