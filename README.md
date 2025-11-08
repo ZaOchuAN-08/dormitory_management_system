@@ -138,31 +138,43 @@ Data Flow Example:
 - Frontend updates UI dynamically based on response.
 
 🔒 Security
+
 All passwords are hashed before being stored in the database.
+
 The PASSWORD column remains for testing and grading only, containing plain text for reference.
+
 Backend validation prevents SQL injection and handles all user input errors gracefully.
+
 
 🧰 Installation & Setup
 
 **Step 1. Install Dependencies**
+
   pip install flask flask-mysqldb flask-cors pymysql pandas werkzeug
 
 **Step 2. Initialize Database**
+
 Run the following scripts in order:
+
 - mysql_class.py – defines helper SQL methods.
 - table_generated.py – drops existing tables and recreates new ones.
 - insert_data.py – inserts initial data.
 - secure_init_password.py – hashes all plaintext passwords.
 
 **Step 3. Run Backend**
+
 python app.py
+
 Keep this running.
 
 **Step 4. Run Frontend**
+
 Open index.html with Live Server in VS Code.
+
 - Tip: Some HTML5 validation messages (e.g., "Please fill in this field") are displayed in the browser's language. For consistent English messages, set your browser language to English before testing.
 
 💡 Notes
+
 - Every dropdown menu and input validation is dynamically linked to backend data.
 - Error messages are shown inline with visual highlights.
 - Each role interacts only with data within their permission scope.
