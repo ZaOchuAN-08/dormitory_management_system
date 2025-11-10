@@ -153,20 +153,20 @@ Backend validation prevents SQL injection and handles all user input errors grac
 
 **Step 1. Install Dependencies**
 
-  pip install flask flask-mysqldb flask-cors pymysql pandas werkzeug
+  `pip install flask flask-mysqldb flask-cors pymysql pandas werkzeug`
 
 **Step 2. Initialize Database**
 
 Run the following scripts in order:
 
-- mysql_class.py – defines helper SQL methods.
-- table_generated.py – drops existing tables and recreates new ones.
-- insert_data.py – inserts initial data.
-- secure_init_password.py – hashes all plaintext passwords.
+- `mysql_class.py` – defines helper SQL methods.
+- `table_generated.py` – drops existing tables and recreates new ones.
+- `insert_data.py` – inserts initial data.
+- `secure_init_password.py` – hashes all plaintext passwords.
 
 **Step 3. Run Backend**
 
-python app.py
+  python app.py
 
 Keep this running.
 
@@ -174,7 +174,7 @@ Keep this running.
 
 Open index.html with Live Server in VS Code.
 
-- Tip: Some HTML5 validation messages (e.g., "Please fill in this field") are displayed in the browser's language. For consistent English messages, set your browser language to English before testing.
+- **Tip:** Some HTML validation messages (e.g., "Please fill in this field") are displayed in the **browser's language**. For consistent English messages, set your browser language to **English** before testing.
 
 ---
 
