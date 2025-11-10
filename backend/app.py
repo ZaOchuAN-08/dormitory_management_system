@@ -30,7 +30,7 @@ def login():
         cur = mysql.connection.cursor()
 
         if not user_id or len(user_id)!=9 or not password:
-            return jsonify({'success': False, 'message': 'Please enter valid ID and password.'}), 400
+            return jsonify({'success': False, 'message': 'Please enter a valid ID and password.'}), 400
 
         user = None
         role = None
