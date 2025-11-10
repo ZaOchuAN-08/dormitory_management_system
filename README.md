@@ -157,7 +157,9 @@ Backend validation prevents SQL injection and handles all user input errors grac
 
 **Step 2. Initialize Database**
 
-Run the following scripts in order:
+Run the following scripts in order: 
+
+**Path: backend/initialize_project**
 
 - `mysql_class.py` – defines helper SQL methods.
 - `table_generated.py` – drops existing tables and recreates new ones.
@@ -175,6 +177,14 @@ Keep this running.
 Open index.html with Live Server in VS Code.
 
 - **Tip:** Some HTML validation messages (e.g., "Please fill in this field") are displayed in the **browser's language**. For consistent English messages, set your browser language to **English** before testing.
+
+**Step 5. Use SQL query to fetch data** (Optional)
+
+**Path: backend/sql_data_fetch**
+
+Use `sql_query.sql` to quickly get IDs and passwords for login testing without manually filtering in the database.
+
+You can change the room, floor, or building ID in the query as needed.
 
 ---
 
