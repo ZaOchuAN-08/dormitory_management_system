@@ -67,21 +67,21 @@ function showDashboard(role, userInfo) {
         
         if (role === 'student') {
             nameElement = document.getElementById('student-name');
-            name = userInfo.STUDENT_NAME || localStorage.getItem('user_id'); 
+            name = userInfo.STUDENT_NAME || sessionStorage.getItem('user_id'); 
             setupDashboardNavigation(dashboard, 'student-info-tab');    // 打开 'student-info-tab'
-            loadStudentInfo(localStorage.getItem('user_id'));
+            loadStudentInfo(sessionStorage.getItem('user_id'));
 
         } else if (role === 'tutor') {
             nameElement = document.getElementById('tutor-name');
-            name = userInfo.TUTOR_NAME || localStorage.getItem('user_id');
+            name = userInfo.TUTOR_NAME || sessionStorage.getItem('user_id');
             setupDashboardNavigation(dashboard, 'tutor-info-tab');    // 打开 'tutor-info-tab'
-            loadTutorInfo(localStorage.getItem('user_id'));
+            loadTutorInfo(sessionStorage.getItem('user_id'));
 
         } else if (role === 'warden') {
             nameElement = document.getElementById('warden-name');
-            name = userInfo.WARDEN_NAME || localStorage.getItem('user_id');
+            name = userInfo.WARDEN_NAME || sessionStorage.getItem('user_id');
             setupDashboardNavigation(dashboard, 'warden-info-tab');    // 打开 'warden-info-tab'
-            loadWardenInfo(localStorage.getItem('user_id'));
+            loadWardenInfo(sessionStorage.getItem('user_id'));
         }
         
         if (nameElement) {
@@ -134,8 +134,8 @@ function setupDashboardNavigation(dashboard, defaultTabId) {
             event.currentTarget.classList.add('current');
 
             // 根据 role 与目标 tab 调用相应的加载器
-            const role = localStorage.getItem('role');
-            const userId = localStorage.getItem('user_id');
+            const role = sessionStorage.getItem('role');
+            const userId = sessionStorage.getItem('user_id');
 
             // 如果切换到个人信息页，加载相应信息（学生/导师/舍监）
             if (targetId === 'student-info-tab' && role === 'student') {loadStudentInfo(userId);}
@@ -183,9 +183,9 @@ async function handleLogin(event) {
             loginMessage.style.color = 'green';
             
             // 存储必要的用户信息
-            localStorage.setItem('role', data.role);
-            localStorage.setItem('user_id', userId);
-            localStorage.setItem('user_info', JSON.stringify(data.user_info));
+            sessionStorage.setItem('role', data.role);
+            sessionStorage.setItem('user_id', userId);
+            sessionStorage.setItem('user_info', JSON.stringify(data.user_info));
             
             showDashboard(data.role, data.user_info);
 
@@ -310,7 +310,7 @@ async function loadStudentDormInfo(studentId) {
 async function handleRecharge(event) {
     event.preventDefault();
 
-    const userId = localStorage.getItem('user_id');
+    const userId = sessionStorage.getItem('user_id');
 
     // 基本校验
     const raw = amountInput.value;
@@ -950,7 +950,7 @@ async function loadWardenAdjustRequests(wardenId) {
  * @param {boolean} show - 是否显示编辑表单
  */
 function toggleEditPhone(show) {
-    const role = localStorage.getItem('role');
+    const role = sessionStorage.getItem('role');
     const currentElements = phoneEditElements[role]
     // 检查元素是否存在，防止报错
     if (!currentElements || !currentElements.editBtn || !currentElements.updateForm) {
@@ -998,8 +998,8 @@ async function handleUpdatePhone(event) {
     event.preventDefault();
 
     let response = null
-    const userId = localStorage.getItem('user_id');
-    const role = localStorage.getItem('role'); // 关键：获取角色信息
+    const userId = sessionStorage.getItem('user_id');
+    const role = sessionStorage.getItem('role'); // 关键：获取角色信息
     const currentPhoneInput = phoneEditElements[role].input;
     const newPhone = currentPhoneInput ? currentPhoneInput.value.trim() : '';
     
@@ -1055,7 +1055,7 @@ async function handleUpdatePhone(event) {
 
 // --- 退出登录函数 (全局可用) ---
 function logout() {
-    localStorage.clear();
+    sessionStorage.clear();
     window.location.reload();
 }
 
@@ -1069,7 +1069,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const elements = phoneEditElements[role];
         if (elements.editBtn) {
             elements.editBtn.addEventListener('click', () => {
-                // 调用 toggleEditPhone(true) 即可，函数会自己通过 localStorage 获取 role
+                // 调用 toggleEditPhone(true) 即可，函数会自己通过 sessionStorage 获取 role
                 toggleEditPhone(true); 
             });
         }
@@ -1080,8 +1080,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 检查本地存储中是否有已登录的用户
-    const savedRole = localStorage.getItem('role');
-    const savedUserInfo = localStorage.getItem('user_info');
+    const savedRole = sessionStorage.getItem('role');
+    const savedUserInfo = sessionStorage.getItem('user_info');
     
     if (savedRole && savedUserInfo) {
         try {
@@ -1111,7 +1111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const roomId = document.getElementById('repair-room').value;
             const repairType = document.getElementById('repair-type').value;
             const messageEl = document.getElementById('repair-message');
-            const userId = localStorage.getItem('user_id');
+            const userId = sessionStorage.getItem('user_id');
             
             if (!roomId || !repairType) {
                 messageEl.textContent = '请完整选择宿舍号和维修类型';
@@ -1140,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adjustForm) {
         adjustForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const studentId = localStorage.getItem('user_id');
+            const studentId = sessionStorage.getItem('user_id');
             const buildingID = document.getElementById('adjust-building').value;
             const floorID = document.getElementById('adjust-floor').value;
             const roomID = document.getElementById('adjust-room').value;

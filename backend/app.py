@@ -123,7 +123,7 @@ def update_student_phone():
     if not student_id or not new_phone:
         return jsonify({'success': False, 'message': 'Missing ID or new phone number.'}), 400
     
-    if len(new_phone) != 11:
+    if len(new_phone) != 11 or not new_phone.startswith('1'):
         return jsonify({'success': False, 'message': 'Invalid phone number format.'}), 400
 
     try:
@@ -190,7 +190,7 @@ def update_tutor_phone():
     if not tutor_id or not new_phone:
         return jsonify({'success': False, 'message': 'Missing ID or new phone number.'}), 400
     
-    if len(new_phone) != 11:
+    if len(new_phone) != 11 or not new_phone.startswith('1'):
         return jsonify({'success': False, 'message': 'Invalid phone number format.'}), 400
 
     try:
@@ -258,7 +258,7 @@ def update_warden_phone():
     if not warden_id or not new_phone:
         return jsonify({'success': False, 'message': 'Missing ID or new phone number.'}), 400
     
-    if len(new_phone) != 11:
+    if len(new_phone) != 11 or not new_phone.startswith('1'):
         return jsonify({'success': False, 'message': 'Invalid phone number format.'}), 400
 
     try:
@@ -643,12 +643,12 @@ def submit_repair_request():
         
         # 更新导师的待处理申请数 +1
         update_query1 = """UPDATE tutor SET TUTOR_TBPROCESSED_REQ_NUM = TUTOR_TBPROCESSED_REQ_NUM + 1
-                          WHERE TUTOR_ID = %s"""
+                           WHERE TUTOR_ID = %s"""
         cur.execute(update_query1, (tutor_id,))
         
         # 更新宿舍 room 的待处理申请数 +1
         update_query2 = """UPDATE room SET REQ_TBPROCESSED_NUM = REQ_TBPROCESSED_NUM + 1
-                          WHERE ROOM_ID = %s"""
+                           WHERE ROOM_ID = %s"""
         cur.execute(update_query2, (room_id,))
         mysql.connection.commit()
         return jsonify({'success': True, 'message': 'Repair request submitted! The tutor will handle it as soon as possible.'})
@@ -672,12 +672,13 @@ def get_tutor_pending_requests():
         cur.execute(select_sql1, (tutor_id,))
         requests_num = cur.fetchone()
 
-        select_sql2 = """SELECT rr.REQUEST_ID, S.STUDENT_ID, S.STUDENT_NAME, S.ROOM_ID, rr.REPAIR_TYPE
-                 FROM repair_request rr
-                 JOIN room R ON S.ROOM_ID = R.ROOM_ID
-                 JOIN floor F ON R.FLOOR_ID = F.FLOOR_ID
-                 WHERE F.TUTOR_ID = %s
-                 ORDER BY rr.REQUEST_ID"""
+        select_sql2 = """SELECT rr.REQUEST_ID, S.STUDENT_ID, S.STUDENT_NAME, rr.ROOM_ID, rr.REPAIR_TYPE
+                         FROM repair_request rr
+                         JOIN student S ON rr.STUDENT_ID = S.STUDENT_ID
+                         JOIN room R ON rr.ROOM_ID = R.ROOM_ID
+                         JOIN floor F ON R.FLOOR_ID = F.FLOOR_ID
+                         WHERE F.TUTOR_ID = %s
+                         ORDER BY rr.REQUEST_ID"""
         cur.execute(select_sql2, (tutor_id,))
         students = cur.fetchall()
         return jsonify({'success': True, 'requests': requests_num, 'students': students})
@@ -756,11 +757,11 @@ def submit_adjust_request():
         cur.execute(insert_sql, (student_id, building_id, floor_id, room_id, bed_id))
         # 更新舍监的待处理 +1
         update_warden = """UPDATE warden SET WARDEN_TBPROCESSED_REQ_NUM = WARDEN_TBPROCESSED_REQ_NUM + 1
-                          WHERE WARDEN_ID=%s"""
+                           WHERE WARDEN_ID=%s"""
         cur.execute(update_warden, (warden_id,))
         # 更新宿舍的待处理 +1
         update_room = """UPDATE room SET REQ_TBPROCESSED_NUM = REQ_TBPROCESSED_NUM + 1
-                          WHERE ROOM_ID = %s"""
+                         WHERE ROOM_ID = %s"""
         cur.execute(update_room, (orig_info['ROOM_ID'],))
         mysql.connection.commit()
         return jsonify({'success': True, 'message': 'Dormitory adjustment request submitted, awaiting warden processing.'})
@@ -784,10 +785,10 @@ def warden_pending_adjust_requests():
         requests_num = cur.fetchone()
 
         select_sql3 = """SELECT ar.REQUEST_ID, s.STUDENT_ID, s.STUDENT_NAME, s.ROOM_ID, ar.BUILDING_ID, ar.FLOOR_ID, ar.TO_ROOM_ID, ar.BED_ID
-                        FROM adjust_request ar
-                        JOIN student s ON ar.STUDENT_ID = s.STUDENT_ID
-                        JOIN building b ON ar.BUILDING_ID = b.BUILDING_ID
-                        WHERE b.WARDEN_ID=%s"""
+                         FROM adjust_request ar
+                         JOIN student s ON ar.STUDENT_ID = s.STUDENT_ID
+                         JOIN building b ON ar.BUILDING_ID = b.BUILDING_ID
+                         WHERE b.WARDEN_ID=%s"""
         cur.execute(select_sql3, (warden_id,))
         requests = cur.fetchall()
         return jsonify({'success': True, 'requests': requests, 'requests_num': requests_num})
@@ -821,7 +822,7 @@ def process_adjust_request():
         orig_bed_id = orig_info['BED_ID'] if orig_info else None
 
         # 处理通过：更新学生宿舍信息
-        if action == '通过':
+        if action == 'Approve':
             # 设置床位不可用
             update_bed = """UPDATE bed SET AVAILABILITY = 0 WHERE ROOM_ID=%s AND BED_ID=%s"""
             cur.execute(update_bed, (orig_room_id, orig_bed_id))

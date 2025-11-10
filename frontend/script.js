@@ -66,21 +66,21 @@ function showDashboard(role, userInfo) {
         
         if (role === 'student') {
             nameElement = document.getElementById('student-name');
-            name = userInfo.STUDENT_NAME || localStorage.getItem('user_id'); 
+            name = userInfo.STUDENT_NAME || sessionStorage.getItem('user_id'); 
             setupDashboardNavigation(dashboard, 'student-info-tab');    // 打开 'student-info-tab'
-            loadStudentInfo(localStorage.getItem('user_id'));
+            loadStudentInfo(sessionStorage.getItem('user_id'));
 
         } else if (role === 'tutor') {
             nameElement = document.getElementById('tutor-name');
-            name = userInfo.TUTOR_NAME || localStorage.getItem('user_id');
+            name = userInfo.TUTOR_NAME || sessionStorage.getItem('user_id');
             setupDashboardNavigation(dashboard, 'tutor-info-tab');    // 打开 'tutor-info-tab'
-            loadTutorInfo(localStorage.getItem('user_id'));
+            loadTutorInfo(sessionStorage.getItem('user_id'));
 
         } else if (role === 'warden') {
             nameElement = document.getElementById('warden-name');
-            name = userInfo.WARDEN_NAME || localStorage.getItem('user_id');
+            name = userInfo.WARDEN_NAME || sessionStorage.getItem('user_id');
             setupDashboardNavigation(dashboard, 'warden-info-tab');    // 打开 'warden-info-tab'
-            loadWardenInfo(localStorage.getItem('user_id'));
+            loadWardenInfo(sessionStorage.getItem('user_id'));
         }
         
         if (nameElement) {
@@ -133,8 +133,8 @@ function setupDashboardNavigation(dashboard, defaultTabId) {
             event.currentTarget.classList.add('current');
 
             // 根据 role 与目标 tab 调用相应的加载器
-            const role = localStorage.getItem('role');
-            const userId = localStorage.getItem('user_id');
+            const role = sessionStorage.getItem('role');
+            const userId = sessionStorage.getItem('user_id');
 
             // 如果切换到个人信息页，加载相应信息（学生/导师/舍监）
             if (targetId === 'student-info-tab' && role === 'student') {loadStudentInfo(userId);}
@@ -182,9 +182,9 @@ async function handleLogin(event) {
             loginMessage.style.color = 'green';
             
             // 存储必要的用户信息
-            localStorage.setItem('role', data.role);
-            localStorage.setItem('user_id', userId);
-            localStorage.setItem('user_info', JSON.stringify(data.user_info));
+            sessionStorage.setItem('role', data.role);
+            sessionStorage.setItem('user_id', userId);
+            sessionStorage.setItem('user_info', JSON.stringify(data.user_info));
             
             showDashboard(data.role, data.user_info);
 
@@ -209,10 +209,6 @@ async function handleLogin(event) {
  * @param {string} studentId - 学生 ID
  */
 async function loadStudentInfo(studentId) {
-    // 确保我们当前在个人信息 Tab 
-    if (!document.getElementById('student-info-tab').classList.contains('current-tab')) {
-        return; // 如果不在当前 Tab，则不加载，避免不必要的请求
-    }
     
     // 重置手机号编辑状态
     toggleEditPhone(false);
@@ -258,10 +254,6 @@ async function loadStudentInfo(studentId) {
 }
 
 async function loadStudentDormInfo(studentId) {
-    // 只在该 Tab 为当前显示时请求，避免不必要请求
-    if (!document.getElementById('student-dorm-tab').classList.contains('current-tab')) {
-        return;
-    }
 
     dormMessage.textContent = 'Loading dorm info...';
     dormMessage.style.color = 'gray';
@@ -310,7 +302,7 @@ async function loadStudentDormInfo(studentId) {
 async function handleRecharge(event) {
     event.preventDefault();
 
-    const userId = localStorage.getItem('user_id');
+    const userId = sessionStorage.getItem('user_id');
 
     // 基本校验
     const raw = amountInput.value;
@@ -423,7 +415,7 @@ async function loadStudentAdjust(studentId) {
         }
             
         // 根据性别限制楼层
-        const floors = (gender === '女') ? [3,5,7] : [2,4,6,8];
+        const floors = (gender === 'Female') ? [3,5,7] : [2,4,6,8];
         floorEl.innerHTML = '<option value="" disabled selected>Select floor</option>';
         floors.forEach(f => {
             const opt = document.createElement('option');
@@ -487,10 +479,6 @@ async function loadStudentAdjust(studentId) {
  * @param {string} tutorId - 导师 ID
  */
 async function loadTutorInfo(tutorId) {
-    // 确保我们当前在个人信息 Tab 
-    if (!document.getElementById('tutor-info-tab').classList.contains('current-tab')) {
-        return; // 如果不在当前 Tab，则不加载，避免不必要的请求
-    }
     
     // 重置手机号编辑状态
     toggleEditPhone(false);
@@ -533,9 +521,7 @@ async function loadTutorInfo(tutorId) {
 }
 
 async function loadTutorStudentInfo(tutorId) {
-    if (!document.getElementById('tutor-student-tab').classList.contains('current-tab')) {
-        return; // 如果不在当前 Tab，则不加载，避免不必要的请求
-    }
+
     const messageTS = document.getElementById('tutor-student-message');
     const listEl = document.getElementById('tutor-student-table-body');
     messageTS.textContent = 'Loading student info';
@@ -661,10 +647,6 @@ async function loadTutorRepairRequests(tutorId) {
  * @param {string} wardenId - 舍监 ID
  */
 async function loadWardenInfo(wardenId) {
-    // 确保我们当前在个人信息 Tab 
-    if (!document.getElementById('warden-info-tab').classList.contains('current-tab')) {
-        return; // 如果不在当前 Tab，则不加载，避免不必要的请求
-    }
     
     // 重置手机号编辑状态
     toggleEditPhone(false);
@@ -707,9 +689,7 @@ async function loadWardenInfo(wardenId) {
 }
 
 async function loadWardenTutorInfo(wardenId) {
-    if (!document.getElementById('warden-tutor-tab').classList.contains('current-tab')) {
-        return; // 如果不在当前 Tab，则不加载，避免不必要的请求
-    }
+
     const messageWT = document.getElementById('warden-tutor-message');
     const listEl = document.getElementById('warden-tutor-table-body');
     messageWT.textContent = 'Loading tutor info...';
@@ -758,9 +738,7 @@ async function loadWardenTutorInfo(wardenId) {
 }
 
 async function loadWardenStudentInfo(wardenId) {
-    if (!document.getElementById('warden-student-tab').classList.contains('current-tab')) {
-        return; // 如果不在当前 Tab，则不加载，避免不必要的请求
-    }
+
     const messageWS = document.getElementById('warden-student-message');
     const listEl = document.getElementById('warden-student-table-body');
     messageWS.textContent = 'Loading student info';
@@ -810,9 +788,7 @@ async function loadWardenStudentInfo(wardenId) {
 }
 
 async function loadWardenDormInfo(wardenId) {
-    if (!document.getElementById('warden-dorm-tab').classList.contains('current-tab')) {
-        return; // 如果不在当前 Tab，则不加载，避免不必要的请求
-    }
+
     const messageElem = document.getElementById('warden-dorm-message');
     const totalBedsElem = document.getElementById('summary-total-beds');
     const occupiedBedsElem = document.getElementById('summary-occupied-beds');
@@ -945,7 +921,7 @@ async function loadWardenAdjustRequests(wardenId) {
  * @param {boolean} show - 是否显示编辑表单
  */
 function toggleEditPhone(show) {
-    const role = localStorage.getItem('role');
+    const role = sessionStorage.getItem('role');
     const currentElements = phoneEditElements[role]
     // 检查元素是否存在，防止报错
     if (!currentElements || !currentElements.editBtn || !currentElements.updateForm) {
@@ -993,8 +969,8 @@ async function handleUpdatePhone(event) {
     event.preventDefault();
 
     let response = null
-    const userId = localStorage.getItem('user_id');
-    const role = localStorage.getItem('role');
+    const userId = sessionStorage.getItem('user_id');
+    const role = sessionStorage.getItem('role');
     const currentPhoneInput = phoneEditElements[role].input;
     const newPhone = currentPhoneInput ? currentPhoneInput.value.trim() : '';
     
@@ -1050,7 +1026,7 @@ async function handleUpdatePhone(event) {
 
 // 退出登录函数
 function logout() {
-    localStorage.clear();
+    sessionStorage.clear();
     window.location.reload();
 }
 
@@ -1074,8 +1050,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 检查本地存储中是否有已登录的用户
-    const savedRole = localStorage.getItem('role');
-    const savedUserInfo = localStorage.getItem('user_info');
+    const savedRole = sessionStorage.getItem('role');
+    const savedUserInfo = sessionStorage.getItem('user_info');
     
     if (savedRole && savedUserInfo) {
         try {
@@ -1105,7 +1081,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const roomId = document.getElementById('repair-room').value;
             const repairType = document.getElementById('repair-type').value;
             const messageEl = document.getElementById('repair-message');
-            const userId = localStorage.getItem('user_id');
+            const userId = sessionStorage.getItem('user_id');
             
             if (!roomId || !repairType) {
                 messageEl.textContent = 'Please select the dormitory number and the type of maintenance completely.';
@@ -1134,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adjustForm) {
         adjustForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const studentId = localStorage.getItem('user_id');
+            const studentId = sessionStorage.getItem('user_id');
             const buildingID = document.getElementById('adjust-building').value;
             const floorID = document.getElementById('adjust-floor').value;
             const roomID = document.getElementById('adjust-room').value;
