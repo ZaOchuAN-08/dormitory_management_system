@@ -3,6 +3,11 @@ CSC3170_individual_project
 
 This project is a **web-based Dormitory Management System** for managing student housing. It supports three user roles: **Students**, **Tutors**, and **Wardens**, with secure authentication, detailed validation, and dynamic UI feedback.
 
+The dormitory layout in this project is inspired by the residential structure of Muse College in CUHKSZ. 
+- Throughout the system, we have 3 buildings in total, all of which have 8 floors, with the groud floor as reception and **2rd to 8th** floor as residential levels.
+- Every floor contains **30 rooms**, numbered from **01 to 30** (e.g., C502 means Building C, Floor 5, Room 02).
+- Each room provides **four beds**, labeled **A, B, C, and D**, forming a complete and realistic student housing model used throughout the system.
+
 ---
 
 ## 🧱 Features Overview

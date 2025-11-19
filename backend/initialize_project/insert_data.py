@@ -2,12 +2,19 @@ from mysql_class import MySQLdb
 import os
 import pandas
 
+DB_HOST = '127.0.0.1'   #   Change to your host
+DB_USER = 'root'        #   Change to your user name
+DB_PASS = '123456'      #   Change to your password for sql
+DB_NAME = 'csc3170_project'     #   Change to the database name
+
 if __name__ == '__main__':
-    host = "127.0.0.1"
-    user = "root"
-    password = "123456"
-    database = "csc3170_project"
-    db = MySQLdb(host, user, password, database)
+    
+    db = MySQLdb(
+        host = DB_HOST,
+        user = DB_USER,
+        password = DB_PASS,
+        database = DB_NAME
+    )
     cursor = db.connection.cursor()
 
     ## 按照结构建立数据库表格

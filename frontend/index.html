@@ -58,7 +58,7 @@
 
                 <form id="student-update-form" class="hidden">
                     <div class="input-group">
-                        <input type="tel" id="new-phone-input" required placeholder="Enter new phone number">
+                        <input type="tel" id="new-phone-input" required placeholder="Enter new phone number of 11 digits and starts with '1'">
                     </div>
                     <button type="submit" class="btn save-btn">Save</button>
                     <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">Cancel</button>
@@ -114,11 +114,8 @@
                 <form id="repair-request-form" class="repair-form fade-in">
                     <label for="repair-type">Repair Type:</label>
                     <select id="repair-type" name="repair_type" required>
-                        <option value="" disabled selected>Select repair type</option>
-                        <option value="Electrical">Electrical Issue</option>
-                        <option value="Lock">Broken Lock</option>
-                        <option value="Furniture">Furniture Damage</option>
-                        <option value="Water">Bathroom Leakage</option>
+                        <option value="" disabled selected>Select Repair Type</option>
+                        <!-- JS 插入选项 -->
                     </select>
                     <label for="repair-room">Dorm Room:</label>
                     <select id="repair-room" name="room_id" required>
@@ -151,8 +148,8 @@
                         <option value="" disabled selected>Select Bed</option>
                     </select>
                     <button type="submit" class="btn-submit">Submit Request</button>
-                    <p id="adjust-message" class="text-center"></p>
                 </form>
+                <p id="adjust-message" class="message"></p>
             </div>
         </div>
         <button class="btn logout-btn" onclick="logout()">LOG OUT</button>
@@ -184,7 +181,7 @@
                 </div>
                 <form id="tutor-update-form" class="hidden">
                     <div class="input-group">
-                        <input type="tel" id="new-tutor-phone-input" required placeholder="Enter new phone number">
+                        <input type="tel" id="new-tutor-phone-input" required placeholder="Enter new phone number of 11 digits and starts with '1'">
                     </div>
                     <button type="submit" class="btn save-btn">Save</button>
                     <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">Cancel</button>
@@ -276,7 +273,7 @@
 
                 <form id="warden-update-form" class="hidden">
                     <div class="input-group">
-                        <input type="tel" id="new-warden-phone-input" required placeholder="Enter new phone number">
+                        <input type="tel" id="new-warden-phone-input" required placeholder="Enter new phone number of 11 digits and starts with '1'">
                     </div>
                     <button type="submit" class="btn save-btn">Save</button>
                     <button type="button" class="btn cancel-btn" onclick="toggleEditPhone(false)">Cancel</button>

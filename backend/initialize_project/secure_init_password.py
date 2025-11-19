@@ -2,10 +2,10 @@ import pymysql
 from mysql_class import MySQLdb
 from werkzeug.security import generate_password_hash
 
-DB_HOST = '127.0.0.1'
-DB_USER = 'root'
-DB_PASS = '123456'
-DB_NAME = 'csc3170_project'
+DB_HOST = '127.0.0.1'   #   Change to your host
+DB_USER = 'root'        #   Change to your user name
+DB_PASS = '123456'      #   Change to your password for sql
+DB_NAME = 'csc3170_project'     #   Change to the database name
 
 db = MySQLdb(
     host = DB_HOST,

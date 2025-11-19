@@ -215,6 +215,7 @@ h1 {
     font-size: 0.95rem;
     font-weight: 500;
     min-height: 20px; /* 保持消息区域高度稳定，防止 CLS */
+    white-space: pre-wrap;
 }
 
 /* 仪表盘特定样式 */

@@ -622,7 +622,14 @@ def submit_repair_request():
         return jsonify({'success': False, 'message': 'Missing information'}), 400
     cur = mysql.connection.cursor()
 
-    try:
+    try:        
+        check_sql = """SELECT 1 FROM repair_request 
+                       WHERE ROOM_ID = %s AND REPAIR_TYPE = %s"""
+        cur.execute(check_sql, (room_id, repair_type))
+        existing_request = cur.fetchone()
+        if existing_request:
+            return jsonify({'success': False, 'message': 'A repair request of this type has already been submitted for this room! \nPlease wait for the tutor to handle it.'})
+        
         # 找到该宿舍对应的导师
         sql_tutor = """SELECT t.TUTOR_ID, f.BUILDING_ID, f.FLOOR_ID
                        FROM tutor t
@@ -633,9 +640,8 @@ def submit_repair_request():
         tutor_info = cur.fetchone()
         if not tutor_info:
             return jsonify({'success': False, 'message': 'No tutor found responsible for this floor.'}), 404
-        
         tutor_id = tutor_info['TUTOR_ID']
-
+        
         # 插入 repair_request
         insert_sql = """INSERT INTO repair_request (STUDENT_ID, ROOM_ID, REPAIR_TYPE)
                         VALUES (%s, %s, %s)"""
@@ -739,6 +745,12 @@ def submit_adjust_request():
 
     cur = mysql.connection.cursor()
     try:
+        check_sql = """SELECT 1 FROM adjust_request WHERE student_id = %s"""
+        cur.execute(check_sql, (student_id,))
+        existing_request = cur.fetchone()
+        if existing_request:
+            return jsonify({'success': False, 'message': 'You have already submitted an adjustment request! \nPlease wait for the warden to handle it.'})
+        
         # 获取原本房号
         cur.execute("SELECT ROOM_ID, BUILDING_ID, FLOOR_ID FROM student WHERE STUDENT_ID=%s", (student_id,))
         orig_info = cur.fetchone()
@@ -764,7 +776,7 @@ def submit_adjust_request():
                          WHERE ROOM_ID = %s"""
         cur.execute(update_room, (orig_info['ROOM_ID'],))
         mysql.connection.commit()
-        return jsonify({'success': True, 'message': 'Dormitory adjustment request submitted, awaiting warden processing.'})
+        return jsonify({'success': True, 'message': 'Dormitory adjustment request has been submitted! Awaiting warden processing.'})
     except Exception as e:
         app.logger.error(f"Error: {e}")
         return jsonify({'success': False, 'message': 'Server error'}), 500
@@ -814,6 +826,12 @@ def process_adjust_request():
         req = cur.fetchone()
         if not req:
             return jsonify({'success': False, 'message': 'No requests found.'}), 404
+        
+        req_student_id = req['STUDENT_ID']
+        req_building_id = req['BUILDING_ID']
+        req_floor_id = req['FLOOR_ID']
+        req_to_room_id = req['TO_ROOM_ID']
+        req_bed_id = req['BED_ID']
 
         # 获取原本房号
         cur.execute("SELECT ROOM_ID, BED_ID FROM student WHERE STUDENT_ID=%s", (req['STUDENT_ID'],))
@@ -824,11 +842,36 @@ def process_adjust_request():
         # 处理通过：更新学生宿舍信息
         if action == 'Approve':
             # 设置床位不可用
-            update_bed = """UPDATE bed SET AVAILABILITY = 0 WHERE ROOM_ID=%s AND BED_ID=%s"""
-            cur.execute(update_bed, (orig_room_id, orig_bed_id))
+            update_bed1 = """UPDATE bed SET AVAILABILITY = 1 WHERE ROOM_ID=%s AND BED_ID=%s"""
+            cur.execute(update_bed1, (orig_room_id, orig_bed_id))
+            update_bed2 = """UPDATE bed SET AVAILABILITY = 0 WHERE ROOM_ID=%s AND BED_ID=%s"""
+            cur.execute(update_bed2, (req_to_room_id, req_bed_id))
+            
+            update_room1 = """UPDATE room SET REMAIN_BEDS = REMAIN_BEDS - 1 WHERE ROOM_ID = %s"""
+            cur.execute(update_room1, (req_to_room_id,))
+            update_room2 = """UPDATE room SET REMAIN_BEDS = REMAIN_BEDS + 1 WHERE ROOM_ID = %s"""
+            cur.execute(update_room2, (orig_room_id,))
+            
+            check_room1 = """SELECT REMAIN_BEDS FROM room WHERE ROOM_ID=%s"""
+            cur.execute(check_room1, (req_to_room_id,))
+            room_bed_data1 = cur.fetchone()
+            room_remain_beds1 = room_bed_data1['REMAIN_BEDS']
+            if room_remain_beds1 == 0:
+                update_query3 = "UPDATE room SET IS_EMPTY = 0 WHERE ROOM_ID = %s"
+                cur.execute(update_query3, (req_to_room_id,))
+
+            check_room2 = """SELECT REMAIN_BEDS FROM room WHERE ROOM_ID=%s"""
+            cur.execute(check_room2, (orig_room_id,))
+            room_bed_data2 = cur.fetchone()
+            room_remain_beds2 = room_bed_data2['REMAIN_BEDS']
+
+            if room_remain_beds2 > 0:
+                update_query3 = "UPDATE room SET IS_EMPTY = 1 WHERE ROOM_ID = %s"
+                cur.execute(update_query3, (orig_room_id,))
+
             update_student = """UPDATE student SET BUILDING_ID=%s, FLOOR_ID=%s, ROOM_ID=%s, BED_ID=%s
                                 WHERE STUDENT_ID=%s"""
-            cur.execute(update_student, (req['BUILDING_ID'], req['FLOOR_ID'], req['TO_ROOM_ID'], req['BED_ID'], req['STUDENT_ID']))
+            cur.execute(update_student, (req_building_id, req_floor_id, req_to_room_id, req_bed_id, req_student_id))
         
         # 删除申请
         cur.execute("DELETE FROM adjust_request WHERE REQUEST_ID=%s", (request_id,))

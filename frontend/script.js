@@ -221,14 +221,14 @@ async function loadStudentInfo(studentId) {
         const data = await response.json();
 
         // 在控制台打印后端返回的原始数据
-        console.log('--- 后端 /student/info 原始返回数据 ---');
+        console.log('--- Backend /student/info initial return data ---');
         console.log(data);
         
         if (response.ok && data.success) {
             const info = data.info;
             
             // 调试：打印提取的 info 对象
-            console.log('--- 提取的 info 对象 ---');
+            console.log('--- Extracted info object ---');
             console.log(info);
 
             // 填充信息到 HTML 元素中
@@ -240,7 +240,7 @@ async function loadStudentInfo(studentId) {
             document.getElementById('info-dormroom').textContent = info.ROOM_ID || 'N/A'; 
             document.getElementById('info-phone').textContent = info.STUDENT_PHONE_NUM || 'N/A';
             document.getElementById('info-email').textContent = info.STUDENT_EMAIL_ADDRESS || 'N/A';
-            infoStudentMessage.textContent = 'Info loaded successfully.';
+            infoStudentMessage.textContent = 'Student info loaded successfully.';
             infoStudentMessage.style.color = 'green';
         } else {
             infoStudentMessage.textContent = data.message || 'Failed to load info.';
@@ -262,7 +262,7 @@ async function loadStudentDormInfo(studentId) {
         const res = await fetch(`${API_URL}/student/dorm_info?id=${encodeURIComponent(studentId)}`);
         const data = await res.json();
 
-        console.log('后端 /student/dorm_info 返回：', data);
+        console.log('Backend /student/dorm_info return: ', data);
 
         if (res.ok && data.success) {
             const info = data.dorm_info || {};
@@ -360,6 +360,11 @@ async function handleRecharge(event) {
 
 async function loadStudentRoom(studentId) {
     const selectEl = document.getElementById('repair-room');
+    const repairEl = document.getElementById('repair-type');
+    const repairMessageEl = document.getElementById('repair-message');
+
+    if (repairMessageEl) {repairMessageEl.textContent = '';}
+    
     selectEl.innerHTML = '<option value="" disabled selected>Loading...</option>';
 
     try {
@@ -376,6 +381,21 @@ async function loadStudentRoom(studentId) {
         } else {
             selectEl.innerHTML = '<option value="" disabled>Unable to find dorm ID</option>';
         }
+        
+        const repairs = [
+            { value: "Electrical", label: "Electrical Issue" },
+            { value: "Lock", label: "Broken Lock" },
+            { value: "Furniture", label: "Furniture Damage" },
+            { value: "Water", label: "Bathroom Leakage" }
+        ];
+        repairEl.innerHTML = '<option value="" disabled selected>Select repair type</option>';
+        repairs.forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r.value;
+            opt.textContent = r.label;
+            repairEl.appendChild(opt);
+        });
+
     } catch (error) {
         console.error('加载学生宿舍号失败:', error);
         selectEl.innerHTML = '<option value="" disabled>Loading failed</option>';
@@ -387,11 +407,14 @@ async function loadStudentAdjust(studentId) {
     const floorEl = document.getElementById('adjust-floor');
     const roomEl = document.getElementById('adjust-room');
     const bedEl = document.getElementById('adjust-bed');
+    const msgEl = document.getElementById('adjust-message');
 
     buildingEl.innerHTML = '<option value="" disabled selected>Loading...</option>';
     floorEl.innerHTML = '<option value="" disabled selected>Select floor</option>';
     roomEl.innerHTML = '<option value="" disabled selected>Select room</option>';
     bedEl.innerHTML = '<option value="" disabled selected>Select bed</option>';
+
+    if (msgEl){msgEl.textContent = '';}
 
     try {
         // 获取学生信息（含性别）
@@ -507,7 +530,7 @@ async function loadTutorInfo(tutorId) {
             document.getElementById('info-tutor-gender').textContent = info.TUTOR_GENDER || 'N/A';  
             document.getElementById('info-tutor-email').textContent = info.TUTOR_EMAIL_ADDRESS || 'N/A';
             document.getElementById('info-tutor-phone').textContent = info.TUTOR_PHONE_NUM || 'N/A';
-            infoTutorMessage.textContent = 'Info loaded successfully.';
+            infoTutorMessage.textContent = 'Tutor info loaded successfully.';
             infoTutorMessage.style.color = 'green';
         } else {
             infoTutorMessage.textContent = data.message || 'Failed to load info.';
@@ -675,7 +698,7 @@ async function loadWardenInfo(wardenId) {
             document.getElementById('info-warden-gender').textContent = info.WARDEN_GENDER || 'N/A';  
             document.getElementById('info-warden-email').textContent = info.WARDEN_EMAIL_ADDRESS || 'N/A';
             document.getElementById('info-warden-phone').textContent = info.WARDEN_PHONE_NUM || 'N/A';
-            infoWardenMessage.textContent = 'Info loaded successfully.';
+            infoWardenMessage.textContent = 'Warden info loaded successfully.';
             infoWardenMessage.style.color = 'green';
         } else {
             infoWardenMessage.textContent = data.message || 'Failed to load info.';
@@ -1080,12 +1103,12 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const roomId = document.getElementById('repair-room').value;
             const repairType = document.getElementById('repair-type').value;
-            const messageEl = document.getElementById('repair-message');
+            const repairMessageEl = document.getElementById('repair-message');
             const userId = sessionStorage.getItem('user_id');
-            
+
             if (!roomId || !repairType) {
-                messageEl.textContent = 'Please select the dormitory number and the type of maintenance completely.';
-                messageEl.style.color = 'red';
+                repairMessageEl.textContent = 'Please select the dormitory number and the type of maintenance completely.';
+                repairMessageEl.style.color = 'red';
                 return;
             }
             
@@ -1096,12 +1119,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ id: userId, room_id: roomId, repair_type: repairType})
                 });
                 const data = await res.json();
-                messageEl.textContent = data.message;
-                messageEl.style.color = data.success ? 'green' : 'red';
+
+                repairMessageEl.textContent = data.message;
+                repairMessageEl.style.color = data.success ? 'green' : 'red';
+                
             } catch (err) {
                 console.error('提交维修申请失败', err);
-                messageEl.textContent = 'Network error, fail to submit.';
-                messageEl.style.color = 'red';
+                repairMessageEl.textContent = 'Network error, fail to submit.';
+                repairMessageEl.style.color = 'red';
             }
         });
     }
